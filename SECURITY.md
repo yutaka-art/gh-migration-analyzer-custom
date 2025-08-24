@@ -1,3 +1,3 @@
-If you discover a security issue in this repo, please submit it through the [GitHub Security Bug Bounty](https://hackerone.com/github)
+このリポジトリでセキュリティ上の問題を発見した場合は、[GitHub Security Bug Bounty](https://hackerone.com/github)を通じて報告してください。
 
-Thanks for helping make GitHub Actions safe for everyone.
+GitHub Actionsを皆にとって安全にするためのご協力に感謝いたします。
