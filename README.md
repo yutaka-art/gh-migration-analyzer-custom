@@ -1,25 +1,26 @@
 # GitHub Migration Analyzer
 
-The Migration Analyzer is a command-line (cli) utility tool that helps customers migrating repositories to GitHub plan for and size their migration in terms. The tool currently supports migrations from Azure DevOps and GitHub Cloud as a source to GitHub Cloud as a destination. 
+Migration Analyzerは、GitHubへのリポジトリ移行を計画し、移行規模を測定するのに役立つコマンドライン（CLI）ユーティリティツールです。このツールは現在、Azure DevOpsおよびGitHub Cloudをソースとし、GitHub Cloudを移行先とする移行をサポートしています。
 
-The tool is for use alongside GitHub's Enterprise Importer (GEI). It is a self-service tool for customers to gauge how much data they will need to migrate without having to do a dry run migration with GEI itself. 
-## Environment
+このツールは、GitHubのEnterprise Importer（GEI）と併用するためのものです。お客様がGEI自体でドライラン移行を実行することなく、移行する必要があるデータ量を測定するためのセルフサービスツールです。
 
-The tool runs in a [Node.js](https://nodejs.org/) runtime environment.  It requires version 14 or greater. 
-## Installation
+## 環境要件
 
-Use the command ```cd <pathname of desired parent directory> && git clone https://github.com/github/gh-migration-analyzer.git``` to change to the desired parent directory and install the tool. 
+このツールは[Node.js](https://nodejs.org/)ランタイム環境で動作します。バージョン14以上が必要です。 
+## インストール
+
+コマンド ```cd <任意の親ディレクトリのパス> && git clone https://github.com/github/gh-migration-analyzer.git``` を使用して、任意の親ディレクトリに移動し、ツールをインストールします。
 
 ## Personal Access Tokens
 
-You will need to generate a Personal Access Token (PAT) within your source (Azure DevOps or GitHub). The following scopes are required:
+ソース（Azure DevOpsまたはGitHub）内でPersonal Access Token（PAT）を生成する必要があります。以下のスコープが必要です：
 
-* For Azure DevOps: `read` for `Code`.
-* For GitHub Cloud: `repo`.  
+* Azure DevOpsの場合：`Code`に対する`read`権限
+* GitHub Cloudの場合：`repo`権限
 
-## Dependencies
+## 依存関係
 
-Use the command ```cd <pathname of migration analyzer directory> && npm install``` to change to your ```migration-analyzer``` directory.  This will install the following project dependencies:
+コマンド ```cd <migration analyzerディレクトリのパス> && npm install``` を使用して```migration-analyzer```ディレクトリに移動します。これにより、以下のプロジェクト依存関係がインストールされます：
 
 - [commander](https://www.npmjs.com/package/commander)
 - [csv-writer](https://www.npmjs.com/package/csv-writer)
@@ -28,66 +29,67 @@ Use the command ```cd <pathname of migration analyzer directory> && npm install`
 - [p-limit](https://www.npmjs.com/package/p-limit)
 - [prompts](https://www.npmjs.com/package/prompts)
 
-## Usage
+## 使用方法
 
-Usage information about the tool is available with the help command. 
+ツールの使用方法に関する情報は、helpコマンドで確認できます。
 ````
 node src/index.js help
 ````
 
-Fetch Azure DevOps organization metrics and write to CSV. 
+Azure DevOps組織のメトリクスを取得してCSVに書き出します。
 ````
-node src/index.js ADO-org [options]
+node src/index.js ADO-org [オプション]
 
-Options:
-  -p, --project <project name> Azure DevOps project name (can pass either project or organization, not necessary to pass both)
-  -o, --organization <organization> Azure DevOps organization name
+オプション:
+  -p, --project <プロジェクト名> Azure DevOpsプロジェクト名（プロジェクトまたは組織のいずれかを渡すことができ、両方を渡す必要はありません）
+  -o, --organization <組織> Azure DevOps組織名
   -t, --token <PAT> Azure DevOps personal access token
-  -h, --help Help command for Azure DevOps options
+  -h, --help Azure DevOpsオプションのヘルプコマンド
 ````
 
-Fetch GitHub Organization Metrics and write to CSV
+GitHub組織のメトリクスを取得してCSVに書き出します
 ````
-node src/index.js GH-org [options]
+node src/index.js GH-org [オプション]
 
-Options:
-  -o, --organization <organization> GitHub organization name (required)
+オプション:
+  -o, --organization <組織> GitHub組織名（必須）
   -t, --token <PAT> GitHub personal access token
-  -s, --server <GRAPHQL URL> GraphQL endpoint for a GHES instance. 
-  -a, --allow-untrusted-ssl-certificates Allow connections to a GitHub API endpoint that presents a SSL certificate that isn't issued by a trusted CA
-  -h, --help Help command for GitHub options
+  -s, --server <GRAPHQL URL> GHESインスタンスのGraphQLエンドポイント
+  -a, --allow-untrusted-ssl-certificates 信頼できるCAによって発行されていないSSL証明書を提示するGitHub APIエンドポイントへの接続を許可
+  -h, --help GitHubオプションのヘルプコマンド
 
 ````
 
-You can alternatively export your PAT as environment variable if you do not want to pass it in with the command. 
+コマンドでPATを渡したくない場合は、代わりに環境変数としてPATをエクスポートすることもできます。
 
-````export GH_PAT=<PAT>```` or ````export ADO_PAT=<PAT>````
+````export GH_PAT=<PAT>```` または ````export ADO_PAT=<PAT>````
 
-The tool will export CSV files a new directory within the project's root directory. If GitHub is the source, the tool will export two CSV files: one containing a list of repositories with the number of Pull Requests, Issues, Projects, and whether wikis are enabled. The other will contain organization-level rollup metrics (number of repositories, pull requests, issues, and projects). If Azure DevOps is the source, the CSV will list each project, and the repositories and pull requests in each. 
+ツールは、プロジェクトのルートディレクトリ内の新しいディレクトリにCSVファイルをエクスポートします。GitHubがソースの場合、ツールは2つのCSVファイルをエクスポートします：1つはプルリクエスト、イシュー、プロジェクトの数、およびwikiが有効かどうかを含むリポジトリのリスト。もう1つは組織レベルの集計メトリクス（リポジトリ、プルリクエスト、イシュー、プロジェクトの数）を含みます。Azure DevOpsがソースの場合、CSVには各プロジェクト、および各プロジェクト内のリポジトリとプルリクエストがリストされます。
 
-## Usage for GitHub Enterprise Server (GHES)
-The tool can be run against a GHES 3.4 or newer to gather migration statistics. Clone this repository onto a computer that has access to your GHES instance's web portal. Ensure that you've run the installation steps described earlier in this readme. You'll need to supply the GraphQL endpoint for your GHES instance in the `-s` option. You can learn how to get this endpoint in the [forming calls with GraphQL](https://docs.github.com/en/enterprise-server@3.4/graphql/guides/forming-calls-with-graphql#the-graphql-endpoint) documentation GitHub provides. The final command will be structured like the below example. 
+## GitHub Enterprise Server（GHES）での使用方法
+
+このツールは、GHES 3.4以降に対して実行して移行統計を収集できます。GHESインスタンスのWebポータルにアクセスできるコンピューターにこのリポジトリをクローンしてください。このREADMEで前述したインストール手順を実行していることを確認してください。`-s`オプションでGHESインスタンスのGraphQLエンドポイントを指定する必要があります。このエンドポイントの取得方法については、GitHubが提供する[GraphQLでの呼び出しの形成](https://docs.github.com/en/enterprise-server@3.4/graphql/guides/forming-calls-with-graphql#the-graphql-endpoint)ドキュメントで学習できます。最終的なコマンドは以下の例のような構造になります。
 
 ```
-node src/index.js GH-org -o <ORG Name> -s <GHES GraphQL Endpoint>
+node src/index.js GH-org -o <組織名> -s <GHES GraphQLエンドポイント>
 ```
 
-## Project Roadmap
+## プロジェクトロードマップ
 
-The current areas of focus for the project are:
-- [ ] Achieving complete code coverage with unit tests
-- [ ] Allowing the command ```migration-analyzer``` to be run instead of ```node src/index.js```
-- [ ] Adding error handling for when an ADO repository contains a large binary that exceeds the size limit
+プロジェクトの現在の重点分野は以下の通りです：
+- [ ] ユニットテストによる完全なコードカバレッジの達成
+- [ ] ```node src/index.js```の代わりに```migration-analyzer```コマンドを実行できるようにする
+- [ ] ADOリポジトリにサイズ制限を超える大きなバイナリが含まれている場合のエラーハンドリングの追加
 
-In the future, the following areas of focus will be added:
-- [ ] Create a new way to distribute and run the tool, such as a Docker image
+将来的には、以下の重点分野が追加される予定です：
+- [ ] Dockerイメージなど、ツールを配布・実行する新しい方法の作成
 
-## Contributions
+## 貢献
 
-This application was originally written by Aryan Patel ([@arypat](https://github.com/AryPat)) and Kevin Smith ([@kevinmsmith131](https://github.com/kevinmsmith131)). See [Contributing](CONTRIBUTING.md) for more information on how to get involved. 
+このアプリケーションは、元々Aryan Patel（[@arypat](https://github.com/AryPat)）とKevin Smith（[@kevinmsmith131](https://github.com/kevinmsmith131)）によって書かれました。参加方法の詳細については、[Contributing](CONTRIBUTING.md)をご覧ください。
 
-## Support
+## サポート
 
-This is a community project *which is not supported by GitHub Support*. 
+これは*GitHubサポートによってサポートされていない*コミュニティプロジェクトです。
 
-Please engage with the community via an [issue](https://github.com/github/gh-migration-analyzer/issues) if you need help, and PRs are always welcome!
+ヘルプが必要な場合は、[issue](https://github.com/github/gh-migration-analyzer/issues)を通してコミュニティと交流してください。PRはいつでも歓迎です！
