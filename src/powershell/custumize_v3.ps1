@@ -1,6 +1,6 @@
 # ==== customize_v3.ps1 ====
 param(
-  [Parameter(Mandatory = $true)][string]$Org = "Avanade-Sdlc-Foundation"
+  [Parameter(Mandatory = $true)][string]$Org = "octocat"
 )
 
 if (-not $env:GH_PAT) { throw "環境変数 GH_PAT が未設定です。" }
