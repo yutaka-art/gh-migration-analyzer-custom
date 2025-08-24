@@ -1,0 +1,55 @@
+{
+  "name": "gh-migration-analyzer",
+  "version": "1.0.0",
+  "description": "A command-line (cli) utility tool to help customers migrating repositories to GitHub plan for and size their migration.",
+  "main": "src/index.js",
+  "preferGlobal": true,
+  "bin": {
+    "gh-migration-analyzer": "./bin/gh-migration-analyzer.js"
+  },
+  "type": "module",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "NODE_OPTIONS=--experimental-vm-modules jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/github/gh-migration-analyzer.git"
+  },
+  "keywords": [
+    "Octoshift",
+    "cli",
+    "migration",
+    "Azure"
+  ],
+  "author": "GitHub Migration Tools",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/github/gh-migration-analyzer/issues"
+  },
+  "homepage": "https://github.com/github/gh-migration-analyzer#readme",
+  "dependencies": {
+    "commander": "^8.3.0",
+    "csv-writer": "^1.6.0",
+    "minimist": "^1.2.6",
+    "node-fetch": "^2.6.0",
+    "ora": "^6.0.1",
+    "p-limit": "^4.0.0",
+    "prompts": "^2.4.2"
+  },
+  "devDependencies": {
+    "eslint": "^8.36.0",
+    "eslint-config-prettier": "^8.8.0",
+    "eslint-config-standard": "^17.0.0",
+    "eslint-plugin-import": "^2.27.5",
+    "eslint-plugin-n": "^15.6.1",
+    "eslint-plugin-prettier": "^4.2.1",
+    "eslint-plugin-promise": "^6.1.1",
+    "jest": "^27.3.1"
+  },
+  "overrides": {
+    "word-wrap": "npm:@aashutoshrathi/word-wrap"
+  }
+}
