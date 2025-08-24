@@ -34,7 +34,9 @@ let count = 0;
  */
 const orgMetrics = {
   mostPr: 0,
+  mostPrRepo: "",
   mostIssues: 0,
+  mostIssuesRepo: ""
 };
 
 /**
@@ -152,9 +154,13 @@ export const fetchRepoMetrics = async (repositories) => {
       isArchived: repo.node.isArchived,
       numOfPullRequests: repo.node.pullRequests.totalCount,
       numOfIssues: repo.node.issues.totalCount,
-      numOfProjects: repo.node.projects.totalCount,
+//      numOfProjects: repo.node.projects.totalCount,
+//      numOfDiscussions: repo.node.discussions.totalCount,
+//      numOfPackages: repo.node.packages.totalCount,
+      numOfProjects: 0, // Classic Projectsは廃止のため0固定
       numOfDiscussions: repo.node.discussions.totalCount,
-      numOfPackages: repo.node.packages.totalCount,
+      // packages（Repo別）は安定取得が難しいため除外
+      numOfPackages: 0,
       numOfReleases: repo.node.releases.totalCount,
       wikiEnabled: repo.node.hasWikiEnabled,
       diskUsage: repo.node.diskUsage,
@@ -162,9 +168,15 @@ export const fetchRepoMetrics = async (repositories) => {
 
     if (repo.node.pullRequests.totalCount > orgMetrics.mostPr) {
       orgMetrics.mostPr = repo.node.pullRequests.totalCount;
+      orgMetrics.mostPrRepo = repo.node.name;
     }
-    if (repo.node.projects.totalCount > orgMetrics.mostIssues) {
-      orgMetrics.mostIssues = repo.node.projects.totalCount;
+//    if (repo.node.projects.totalCount > orgMetrics.mostIssues) {
+//      orgMetrics.mostIssues = repo.node.projects.totalCount;
+//    }
+    // BUGFIX: mostIssues は Issues の最大を比較すべき
+    if (repo.node.issues.totalCount > orgMetrics.mostIssues) {
+      orgMetrics.mostIssues = repo.node.issues.totalCount;
+      orgMetrics.mostIssuesRepo = repo.node.name;
     }
     count = count + 1;
     metrics.push(repoInfo);
@@ -178,9 +190,10 @@ export const fetchRepoMetrics = async (repositories) => {
   // fetch the next 50 repos
   if (repositories.length === 50) {
     // get cursor to last repository
-    spinner.start(
-      `(${count}/${fetched.data.organization.repositories.totalCount}) Fetching next 50 repos`
-    );
+//    spinner.start(
+//      `(${count}/${fetched.data.organization.repositories.totalCount}) Fetching next 50 repos`
+//    );
+    spinner.start(`(${count}/${fetched.data.organization.repositories.totalCount}) Fetching next 100 repos`);
     const cursor = repositories[repositories.length - 1].cursor;
     const result = await fetchRepoInOrg(
       auth.organization,
@@ -257,11 +270,13 @@ export function fetchOrgInfoOptions(org, token, allowUntrustedSslCertificates) {
     method: "POST",
     headers: {
       Authorization: `bearer ${token}`,
+      "Content-Type": "application/json",
+      "User-Agent": "gh-migration-analyzer-fixed"
     },
     body: JSON.stringify({
       query: `{
         organization(login: "${org}") {
-          projects(first: 1) {
+          projectsV2(first: 1) {
             totalCount
           }
           membersWithRole(first: 1) {
@@ -311,9 +326,6 @@ export function fetchRepoInOrgInfoOptions(
             edges {
               cursor
               node {
-                projects(first:1){
-                  totalCount
-                }  
                 hasWikiEnabled
                 issues(first: 1) {
                   totalCount
@@ -322,9 +334,6 @@ export function fetchRepoInOrgInfoOptions(
                   totalCount
                 }
                 discussions(first: 1) {
-                  totalCount
-                }
-                packages(first: 1) {
                   totalCount
                 }
                 releases(first: 1) {
@@ -384,11 +393,13 @@ export const storeOrgMetrics = async (organization, server) => {
   const storeData = [
     {
       numOfRepos: metrics.length,
-      numOfProjects: orgInfo.data.organization.projects.totalCount,
+      numOfProjects: orgInfo.data.organization.projectsV2.totalCount,
       numOfMembers: orgInfo.data.organization.membersWithRole.totalCount,
-      mostPrs: orgMetrics.mostPr,
+      //mostPrs: orgMetrics.mostPr,
+      mostPrs: `${orgMetrics.mostPrRepo} (${orgMetrics.mostPr})`,
       averagePrs: Math.round(totalCount.pr / metrics.length),
-      mostIssues: orgMetrics.mostIssues,
+      //mostIssues: orgMetrics.mostIssues,
+      mostIssues: `${orgMetrics.mostIssuesRepo} (${orgMetrics.mostIssues})`,
       averageIssues: Math.round(totalCount.issue / metrics.length),
     },
   ];
