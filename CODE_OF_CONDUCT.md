@@ -1,8 +1,3 @@
-+++
-version = "1.4"
-aliases = ["/version/1/4"]
-+++
-
 # Contributor Covenant 行動規範
 
 ## 私たちの誓約

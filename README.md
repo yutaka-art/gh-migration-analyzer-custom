@@ -1,5 +1,7 @@
 # GitHub Migration Analyzer
 
+**このツールの本家は[GitHub Migration Analyzer](https://github.com/github/gh-migration-analyzer)ですが、既にアーカイブされており、現在はメンテナンスされていないため、本家をベースとしてカスタマイズを行ったものです。**
+
 Migration Analyzerは、GitHubへのリポジトリ移行を計画し、移行規模を測定するのに役立つコマンドライン（CLI）ユーティリティツールです。このツールは現在、Azure DevOpsおよびGitHub Cloudをソースとし、GitHub Cloudを移行先とする移行をサポートしています。
 
 このツールは、GitHubのEnterprise Importer（GEI）と併用するためのものです。お客様がGEI自体でドライラン移行を実行することなく、移行する必要があるデータ量を測定するためのセルフサービスツールです。
@@ -91,4 +93,4 @@ node src/index.js GH-org -o <組織名> -s <GHES GraphQLエンドポイント>
 ## サポート
 これは*GitHubサポートによってサポートされていない*コミュニティプロジェクトです。
 
-ヘルプが必要な場合は、[issue](https://github.com/github/gh-migration-analyzer/issues)を通してコミュニティと交流してください。PRはいつでも歓迎です！
+ヘルプが必要な場合は、[issue](https://github.com/yutaka-art/gh-migration-analyzer-custom/issues)を通してコミュニティと交流してください。PRはいつでも歓迎です！
